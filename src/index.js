@@ -16,42 +16,40 @@ function getClassSelectorFromRule(rule) {
 exports.Processor = class Processor {
   constructor(input) {
     this.root = postcss.parse(input);
-    this.exports = new Map();
+    this.exportsMap = new Map();
+    this.outputRoot = postcss.root();
   }
 
   process() {
-    let newRoot = postcss.root();
-
     this.root.each(node => {
-      this.processNode(newRoot, node);
+      this.processNode(node);
     });
-
-    return {
-      exports: this.stringExports(),
-      root: newRoot
-    };
   }
 
-  stringExports() {
+  exports() {
     let stringExports = {};
 
-    this.exports.forEach((classes, name) => {
+    this.exportsMap.forEach((classes, name) => {
       stringExports[name] = classes.join(" ");
     });
 
     return stringExports;
   }
 
+  outputCssRoot() {
+    return this.outputRoot;
+  }
+
   lookupClassesFromExport(exportName) {
-    if (!this.exports.has(exportName)) {
+    if (!this.exportsMap.has(exportName)) {
       throw new Error(`Undefined class ${exportName}`);
     }
 
-    return this.exports.get(exportName);
+    return this.exportsMap.get(exportName);
   }
 
   addExport(exportName, className, composedClasses = []) {
-    let classes = this.exports.get(exportName) || [];
+    let classes = this.exportsMap.get(exportName) || [];
 
     // Resolve the composed classes
     composedClasses.forEach(composedClass => {
@@ -61,10 +59,10 @@ exports.Processor = class Processor {
     // Add ourselves
     classes.push(className);
 
-    this.exports.set(exportName, classes);
+    this.exportsMap.set(exportName, classes);
   }
 
-  processRule(newRoot, rule) {
+  processRule(rule) {
     const classSelector = getClassSelectorFromRule(rule);
     if (classSelector) {
       let ruleComposedOf = [];
@@ -79,11 +77,11 @@ exports.Processor = class Processor {
     return rule;
   }
 
-  processNode(newRoot, node) {
+  processNode(node) {
     if (node.type === "rule") {
-      node = this.processRule(newRoot, node);
+      node = this.processRule(node);
     }
 
-    newRoot.append(node);
+    this.outputRoot.append(node);
   }
 };

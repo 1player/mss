@@ -36,7 +36,6 @@ test("can generate CSS from plain CSS", () => {
   };
 
   const p = new mss.Processor(input);
-  const { exports, root } = p.process();
-  console.log(root.toString());
-  testRoot(root, expectedRoot);
+  p.process();
+  testRoot(p.outputCssRoot(), expectedRoot);
 });

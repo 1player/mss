@@ -12,8 +12,8 @@ test("can generate exports from plain CSS", () => {
   };
 
   const p = new mss.Processor(input);
-  const { exports, root } = p.process();
-  expect(exports).toEqual(outputExports);
+  p.process();
+  expect(p.exports()).toEqual(outputExports);
 });
 
 test("can generate exports from simple, local @composes declaration", () => {
@@ -32,8 +32,8 @@ test("can generate exports from simple, local @composes declaration", () => {
   };
 
   const p = new mss.Processor(input);
-  const { exports, root } = p.process();
-  expect(exports).toEqual(outputExports);
+  p.process();
+  expect(p.exports()).toEqual(outputExports);
 });
 
 test("can generate exports from nested, local @composes declaration", () => {
@@ -55,6 +55,6 @@ test("can generate exports from nested, local @composes declaration", () => {
   };
 
   const p = new mss.Processor(input);
-  const { exports, root } = p.process();
-  expect(exports).toEqual(outputExports);
+  p.process();
+  expect(p.exports()).toEqual(outputExports);
 });
