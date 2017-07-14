@@ -39,3 +39,23 @@ test("can generate CSS from plain CSS", () => {
   p.process();
   testRoot(p.outputCssRoot(), expectedRoot);
 });
+
+test("can generate CSS from simple, local @composes declaration", () => {
+  const input = `
+      .red { color: red; }
+      .p0 { padding: 0; }
+      .button { @composes red; }
+      .header { @composes red, p0; }
+    `;
+
+  const expectedRoot = {
+    ".red": ["color: red"],
+    ".p0": ["padding: 0"],
+    ".button": [],
+    ".header": []
+  };
+
+  const p = new mss.Processor(input);
+  p.process();
+  testRoot(p.outputCssRoot(), expectedRoot);
+});
