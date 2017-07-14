@@ -69,6 +69,9 @@ exports.Processor = class Processor {
 
       rule.walkAtRules("composes", node => {
         ruleComposedOf = postcss.list.comma(node.params);
+
+        // Eat the composes node
+        node.remove();
       });
 
       this.addExport(classSelector, classSelector, ruleComposedOf);

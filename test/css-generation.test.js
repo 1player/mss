@@ -10,17 +10,14 @@ function testRoot(gotRoot, expectedRoot) {
     expect(expectedRoot.hasOwnProperty(rule.selector)).toBeTruthy();
 
     // Make sure the declarations match
-    let gotDeclarations = [];
-    let expectedDeclarations = expectedRoot[rule.selector];
+    let gotContents = [];
+    let expectedContents = expectedRoot[rule.selector];
 
-    rule.walkDecls(decl => {
-      gotDeclarations.push(decl.toString());
+    rule.walk(node => {
+      gotContents.push(node.toString());
     });
 
-    expect(gotDeclarations).toEqual(
-      expect.arrayContaining(expectedDeclarations)
-    );
-    expect(gotDeclarations).toHaveLength(expectedDeclarations.length);
+    expect(gotContents).toEqual(expectedContents);
   });
 }
 
