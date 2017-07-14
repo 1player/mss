@@ -59,3 +59,26 @@ test("can generate CSS from simple, local @composes declaration", () => {
   p.process();
   testRoot(p.outputCssRoot(), expectedRoot);
 });
+
+test("can generate CSS from nested, local @composes declaration", () => {
+  const input = `
+      .red { color: red; }
+      .p0 { padding: 0; }
+      .big-red { 
+        @composes red;
+        font-size: larger;
+      }
+      .button { @composes big-red, p0; }
+    `;
+
+  const expectedRoot = {
+    ".red": ["color: red"],
+    ".p0": ["padding: 0"],
+    ".big-red": ["font-size: larger"],
+    ".button": []
+  };
+
+  const p = new mss.Processor(input);
+  p.process();
+  testRoot(p.outputCssRoot(), expectedRoot);
+});
